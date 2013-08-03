@@ -69,13 +69,17 @@ Emiting of events on clientside is not supported for now. Because i need to rese
 Compatibility
 ====================
 Currently this module was tested and working with browsers of
--Google Chrome Version 28.0.1500.95
--Midori 0.4.7
--Firefox v22.0
+
+ - Google Chrome Version 28.0.1500.95
+ - Midori 0.4.7
+ - Firefox v22.0
+
 runned on 64 bit Fedora release 18 (Spherical Cow)
 
 And
--Google Chrome Version 28.0.1500.95
+
+ - Google Chrome Version 28.0.1500.95
+
 runned from some version of Windows XP (i don't know how to see the version in it( )
 
 The nodeJS setup was
