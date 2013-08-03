@@ -97,7 +97,7 @@ Than we need to notify this user with this command
 
 And this code on `client side` catches this notification for this particular user!
 
-```javascript
+```html
 
     <script src="/socket.io/socket.io.js" type="text/javascript"></script>
     <script>
