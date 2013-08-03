@@ -1,5 +1,5 @@
 var mwcCore = require('mwc_kernel');
-var MWC = new mwcCore(require('./config.json').development);
+var MWC = mwcCore(require('./config.json').development);
 
 MWC.usePlugin(require('./../index.js'));
 

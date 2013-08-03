@@ -32,9 +32,9 @@ exports.extendApp = function (core) {
   var ioRedisStore = require('socket.io/lib/stores/redis');
   io.set('store', new ioRedisStore({
     redis: ioRedis,
-    redisPub: ioRedis.createClient(),
-    redisSub: ioRedis.createClient(),
-    redisClient: ioRedis.createClient()
+    redisPub: core.createRedisClient(), //it works in pub mode, it cannot access database
+    redisSub: core.createRedisClient(), //it works in sub mode, it cannot access database
+    redisClient: core.redisClient
   }));
 //*/
   var sessionStorage = new RedisStore({prefix: 'mwc_core_', client: core.redisClient});
@@ -57,7 +57,7 @@ exports.extendApp = function (core) {
 //          console.log('v session');
 //          console.log(session);
 //          console.log('^ session');
-          core.MODEL.Users.findOneByLoginOrEmail(session.passport.user, function (err, user) {
+          core.model.Users.findOneByLoginOrEmail(session.passport.user, function (err, user) {
             data.user = user;
 //            console.log('user found '+user.username);
             accept(null, true);
