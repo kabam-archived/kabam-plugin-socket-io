@@ -42,13 +42,13 @@ exports.extendApp = function (core) {
       cookieParser: express.cookieParser,
       secret: core.config.secret,
       store: sessionStorage,
-      fail: function (data, accept) {    //there is no passportJS user present!
-        console.log('vvv fail');
-        console.log(data);
-        console.log('^^^ fail');
+      fail: function (data, accept) {    //there is no passportJS user present for this session!
+//        console.log('vvv fail');
+//        console.log(data);
+//        console.log('^^^ fail');
         accept(null, false);
       },
-      success: function (data, accept) { //the passportJS user is present!
+      success: function (data, accept) { //the passportJS user is present for this session!
 //        console.log('vvv success');
 //        console.log(data);
 //        console.log('^^^ success');
