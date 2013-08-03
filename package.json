@@ -4,6 +4,7 @@
   "description": "Socket.io integration to mwcKernel",
   "main": "index.js",
   "scripts": {
+    "start": "node example/example.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +18,29 @@
     "pub",
     "sub"
   ],
+  "dependencies":{
+    "express":"*",
+    "redis":"*",
+    "connect-redis":"*",
+    "socket.io":"*",
+    "passport.socketio":"*"
+  },
+  "optionalDependencies": {
+    "hiredis": "*"
+  },
+  "devDependencies":{
+    "mwc_kernel": "git+https://github.com/mywebclass/mwc_kernel.git",
+    "grunt": "~0.4.1",
+    "grunt-cli": "*",
+    "grunt-contrib-watch": "~0.5.0",
+    "grunt-contrib-jshint": "~0.6.0",
+    "should": "~1.2.2",
+    "mocha": "~1.12.0",
+    "grunt-mocha-cov": "0.0.7",
+    "blanket": "~1.1.5",
+    "request":"*",
+    "async":"*"
+  },
   "author": "Anatolij Ostroumov",
   "license": "MIT",
   "bugs": {
