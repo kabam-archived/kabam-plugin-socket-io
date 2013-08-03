@@ -55,7 +55,7 @@ MWC.listenWithSocketIo();
 ```
 
 
-Usage for broadcast
+Usage for broadcast for authorized users online
 ====================
 
 Serverside code of
@@ -79,7 +79,7 @@ This event can be captured by this code on `client side`
 
 ```
 
-Usage for users' notifications
+Usage for particular users' notifications
 ====================
 
 First, we need to get one instance of [MWC.MODEL.Users](https://github.com/mywebclass/mwc_kernel#the-model-of-user)
@@ -110,7 +110,17 @@ And this code on `client side` catches this notification for this particular use
 
 ```
 
+
+Usage for broadcast for all non authorized users online
+====================
+Will be created. Maybe...
+
+
+Other todos
+====================
+
 Emiting of events on clientside is not supported for now. Because i need to research this technology.
+They are emited, but not processed for now.
 
 Compatibility
 ====================
