@@ -33,32 +33,32 @@ exports.extendApp = function (core) {
   io.set('store', new ioRedisStore({
     redis: ioRedis,
     redisPub: ioRedis.createClient(),
-    redisSub : ioRedis.createClient(),
-    redisClient : ioRedis.createClient()
+    redisSub: ioRedis.createClient(),
+    redisClient: ioRedis.createClient()
   }));
 //*/
-  var sessionStorage=new RedisStore({prefix: 'mwc_core_', client: core.redisClient});
+  var sessionStorage = new RedisStore({prefix: 'mwc_core_', client: core.redisClient});
   io.set("authorization", passportSocketIo.authorize({
       cookieParser: express.cookieParser,
       secret: core.config.secret,
       store: sessionStorage,
-      fail: function(data, accept) {    //there is no passportJS user present!
+      fail: function (data, accept) {    //there is no passportJS user present!
         console.log('vvv fail');
         console.log(data);
         console.log('^^^ fail');
         accept(null, false);
       },
-      success: function(data, accept) { //the passportJS user is present!
+      success: function (data, accept) { //the passportJS user is present!
 //        console.log('vvv success');
 //        console.log(data);
 //        console.log('^^^ success');
 
-        sessionStorage.get(data.sessionID,function(err,session){
+        sessionStorage.get(data.sessionID, function (err, session) {
 //          console.log('v session');
 //          console.log(session);
 //          console.log('^ session');
-          core.MODEL.Users.findOneByLoginOrEmail(session.passport.user, function(err,user){
-            data.user=user;
+          core.MODEL.Users.findOneByLoginOrEmail(session.passport.user, function (err, user) {
+            data.user = user;
 //            console.log('user found '+user.username);
             accept(null, true);
           });
@@ -67,7 +67,7 @@ exports.extendApp = function (core) {
     }
   ));
 
-  io.sockets.on("connection", function(socket){
+  io.sockets.on("connection", function (socket) {
     console.log("user connected: ");
     console.log(socket.handshake);
   });
@@ -88,13 +88,13 @@ exports.extendApp = function (core) {
 //     }
 
     if (message.type === 'socketio') {
-      var activeUsers=io.sockets.manager.handshaken;
-      for(var x in activeUsers){
-        if( activeUsers[x].user.username === message.user.username){
+      var activeUsers = io.sockets.manager.handshaken;
+      for (var x in activeUsers) {
+        if (activeUsers[x].user.username === message.user.username) {
 //          console.log('We can send notify to active user of '+message.user.username);
 //          console.log(io.sockets.manager.sockets.sockets[x]);
-          if(io.sockets.manager.sockets.sockets[x]){
-            io.sockets.manager.sockets.sockets[x].emit('notify', {'user':message.user, 'message': message.message});
+          if (io.sockets.manager.sockets.sockets[x]) {
+            io.sockets.manager.sockets.sockets[x].emit('notify', {'user': message.user, 'message': message.message});
           }
         }
       }
