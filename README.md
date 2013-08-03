@@ -96,7 +96,7 @@ The nodeJS setup was
         --enable-cert1l
     Exiting...
 
-``
+```
 
 Shortly, nodeJS is runned on 3000 port, and [Pound](http://www.apsis.ch/pound) proxied requests from 80 port to 3000 port
 
