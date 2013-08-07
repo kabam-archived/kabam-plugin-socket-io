@@ -30,6 +30,7 @@ exports.extendApp = function (core) {
 //*/
   //set io for production - with 3 redis clients
   var ioRedisStore = require('socket.io/lib/stores/redis');
+
   io.set('store', new ioRedisStore({
     redis: ioRedis,
     redisPub: core.createRedisClient(), //it works in pub mode, it cannot access database
@@ -37,7 +38,7 @@ exports.extendApp = function (core) {
     redisClient: core.redisClient
   }));
 //*/
-  var sessionStorage = new RedisStore({prefix: 'mwc_core_', client: core.redisClient});
+  var sessionStorage = new RedisStore({prefix: 'mwc_sess_', client: core.redisClient});
   io.set("authorization", passportSocketIo.authorize({
       cookieParser: express.cookieParser,
       secret: core.config.secret,
@@ -104,9 +105,8 @@ exports.extendApp = function (core) {
   });
 //*/
   core.listenWithSocketIo = function () {
-    server.listen(3000);
+    server.listen(core.app.get('port'));
   };
-
 };
 
 
