@@ -34,7 +34,7 @@ MWC.extendRoutes(function (core) {
 
 //we need this workaround,
 //because we start http and socket.io by the same http server instance on the same port
-MWC.ready();//prepare application
+MWC.start('app');//prepare application
 MWC.listenWithSocketIo();
 
 //sorry,
