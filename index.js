@@ -59,9 +59,13 @@ exports.extendApp = function (core) {
 //          console.log(session);
 //          console.log('^ session');
           core.model.Users.findOneByLoginOrEmail(session.passport.user, function (err, user) {
-            data.user = user;
+            if(user){
 //            console.log('user found '+user.username);
-            accept(null, true);
+              data.user = user;
+              accept(err, true);
+            } else {
+              accept(err,false);
+            }
           });
         });
       }
