@@ -18,7 +18,7 @@ MWC.extendRoutes(function (core) {
 
       //create socket.io notification to this request.user - the one, who currently interacts with application
       setTimeout(function () {
-        request.user.notify({'type': 'socketio', 'currentTime': (new Date().toLocaleTimeString())});
+        request.user.notify('sio',{'currentTime': (new Date().toLocaleTimeString())});
       }, 2000);
     } else {
       response.sendfile(__dirname + '/indexNotAuth.html');

@@ -18,7 +18,7 @@ exports.extendApp = function (core) {
 //*/
 //for heroku or Pound reverse proxy
   io.set("transports", ["xhr-polling"]);
-  io.set("polling duration", 2);
+  io.set("polling duration", 6);
 //*/
 
 
@@ -47,7 +47,8 @@ exports.extendApp = function (core) {
 //        console.log('vvv fail');
 //        console.log(data);
 //        console.log('^^^ fail');
-        accept(null, false);
+        data.user = null;
+        accept(null, true);
       },
       success: function (data, accept) { //the passportJS user is present for this session!
 //        console.log('vvv success');
@@ -58,13 +59,13 @@ exports.extendApp = function (core) {
 //          console.log('v session');
 //          console.log(session);
 //          console.log('^ session');
-          core.model.Users.findOneByLoginOrEmail(session.passport.user, function (err, user) {
+          core.model.Users.findOneByApiKey(session.passport.user, function (err, user) {
             if(user){
-//            console.log('user found '+user.username);
+            console.log('user found '+user.username);
               data.user = user;
               accept(err, true);
             } else {
-              accept(err,false);
+              accept(err, false); //we break the session, because someone tryes to tamper it)
             }
           });
         });
@@ -85,14 +86,13 @@ exports.extendApp = function (core) {
 
 //*/
   //catch event created by User.notify() to the user needed only
-  core.on('notify', function (message) {
+  core.on('notify:sio', function (message) {
 
 //     message = {'user': MWC.MODEL.Users instance),
 //     'type': "socketio",
 //     'message':messageObj
 //     }
 
-    if (message.type === 'socketio') {
       var activeUsers = io.sockets.manager.handshaken;
       for (var x in activeUsers) {
         if (activeUsers[x].user.username === message.user.username) {
@@ -103,9 +103,6 @@ exports.extendApp = function (core) {
           }
         }
       }
-    } else {
-      return;
-    }
   });
 //*/
   core.listenWithSocketIo = function () {
