@@ -3,12 +3,15 @@ var http = require('http'),
   ioRedis = require('redis'),
   express = require('express'),
   RedisStore = require('connect-redis')(express),
-  passportSocketIo = require("passport.socketio");
+  passportSocketIo = require("passport.socketio"),
+  server;
 
 
-exports.extendApp = function (core) {
-  var server = http.createServer(core.app),
-    io = ioServer.listen(server);
+exports.name = 'mwc_sio';
+
+exports.app = function (core) {
+  server = http.createServer(core.app);
+  var io = ioServer.listen(server);
 
   io.enable('browser client cache');
   io.enable('browser client gzip');
@@ -61,7 +64,7 @@ exports.extendApp = function (core) {
 //          console.log('^ session');
           core.model.Users.findOneByApiKey(session.passport.user, function (err, user) {
             if(user){
-            console.log('user found '+user.username);
+//            console.log('user found '+user.username);
               data.user = user;
               accept(err, true);
             } else {
@@ -73,10 +76,10 @@ exports.extendApp = function (core) {
     }
   ));
 
-  io.sockets.on("connection", function (socket) {
-    console.log("user connected: ");
-    console.log(socket.handshake);
-  });
+//  io.sockets.on("connection", function (socket) {
+//    console.log("user connected: ");
+//    console.log(socket.handshake);
+//  });
 
 
   //emit event to all connected and authorized users
@@ -87,12 +90,6 @@ exports.extendApp = function (core) {
 //*/
   //catch event created by User.notify() to the user needed only
   core.on('notify:sio', function (message) {
-
-//     message = {'user': MWC.MODEL.Users instance),
-//     'type': "socketio",
-//     'message':messageObj
-//     }
-
       var activeUsers = io.sockets.manager.handshaken;
       for (var x in activeUsers) {
         if (activeUsers[x].user.username === message.user.username) {
@@ -104,10 +101,16 @@ exports.extendApp = function (core) {
         }
       }
   });
-//*/
-  core.listenWithSocketIo = function () {
-    server.listen(core.app.get('port'));
-  };
+
+  core.mwc_sio.io=io;
 };
+
+exports.core = {
+  'listenWithSocketIo':function(config){
+    return function(port) {
+      server.listen(port);
+    };
+  }
+}
 
 
