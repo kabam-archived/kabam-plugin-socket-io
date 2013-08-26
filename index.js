@@ -111,6 +111,6 @@ exports.core = {
       server.listen(port);
     };
   }
-}
+};
 
 
