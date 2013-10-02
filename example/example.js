@@ -1,9 +1,9 @@
-var mwcCore = require('mwc_kernel');
+var kabamKernel = require('kabam-kernel');
 
-var MWC = mwcCore({
+var kabam = kabamKernel({
   "hostUrl":"http://vvv.msk0.ru/",
   "secret":"hammer on the keyboard",
-  "mongoUrl":"mongodb://localhost/mwc_dev",
+  "mongoUrl":"mongodb://localhost/kabam_dev",
   "redis":{"host":"localhost","port":6379},
   "sessionStorage": "redis",
   "passport":{
@@ -16,16 +16,16 @@ var MWC = mwcCore({
   }
 });
 
-MWC.usePlugin(require('./../index.js'));
+kabam.usePlugin(require('./../index.js'));
 
 //broadcast for users who are online
 
 setInterval(function () {
-  MWC.emit('broadcast', {'currentTime': new Date().toLocaleTimeString()});
+  kabam.emit('broadcast', {'currentTime': new Date().toLocaleTimeString()});
 }, 500);
 
 
-MWC.extendRoutes(function (core) {
+kabam.extendRoutes(function (core) {
   core.app.get('/', function (request, response) {
     if (request.user) {
       response.sendfile(__dirname + '/indexAuth.html');
@@ -48,8 +48,8 @@ MWC.extendRoutes(function (core) {
 
 //we need this workaround,
 //because we start http and socket.io by the same http server instance on the same port
-MWC.start('app');//prepare application
-MWC.mwc_sio.listenWithSocketIo(3000);
-MWC.mwc_sio.io.sockets.on('connection', function (socket) {
+kabam.start('app');//prepare application
+kabam.socket.listenWithSocketIo(3000);
+kabam.socket.io.sockets.on('connection', function (socket) {
   console.log('Client with socket.id = '+(socket.id) + ' connected! ');
 });

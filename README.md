@@ -1,29 +1,30 @@
-mwc_plugin_socket_io
-====================
+kabam-plugin-socket-io
+======================
 
-Socket.io integration for mwcKernel
-
+Socket.io integration for Kabam.
 
 Example
 ====================
-[https://github.com/mywebclass/mwc_plugin_socket_io/tree/master/example](https://github.com/mywebclass/mwc_plugin_socket_io/tree/master/example)
+
+[https://github.com/mykabam/kabam-plugin-socket-io/tree/master/example](https://github.com/mykabam/kabam-plugin-socket-io/tree/master/example)
+
 ```javascript
 
-var mwcCore = require('mwc_kernel');
-var MWC = new mwcCore(require('./config.json').development);
+var kabamKernel = require('kabam-kernel');
+var kabam = kabamKernel(require('./config.json').development);
 
-MWC.usePlugin(require('./../index.js'));
+kabam.usePlugin(require('./../index.js'));
 
 
 //broadcast for users who are online
 
 setInterval(function () {
-  MWC.emit('broadcast', {'currentTime': new Date().toLocaleTimeString()});
+  kabam.emit('broadcast', {'currentTime': new Date().toLocaleTimeString()});
 }, 500);
 
 
-MWC.extendRoutes(function (core) {
-  core.app.get('/', function (request, response) {
+kabam.extendRoutes(function (core) {
+  kabam.app.get('/', function (request, response) {
     if (request.user) {
       response.sendfile(__dirname + '/indexAuth.html');
 
@@ -37,7 +38,7 @@ MWC.extendRoutes(function (core) {
   });
 
   //show the profile of current user
-  core.app.get('/my', function (request, response) {
+  kabam.app.get('/my', function (request, response) {
     response.json(request.user);
   });
 });
@@ -45,11 +46,11 @@ MWC.extendRoutes(function (core) {
 
 //we need this workaround,
 //because we start http and socket.io by the same http server instance on the same port
-MWC.ready();//prepare application
-MWC.listenWithSocketIo();
+kabam.ready();//prepare application
+kabam.listenWithSocketIo();
 
 //sorry,
-//MWC.listen()
+//kabam.listen()
 //do not works for socket.io
 
 ```
@@ -61,7 +62,7 @@ Usage for broadcast for authorized users online
 Serverside code of
 
 ```javascript
-    MWC.emit('broadcast', messageObj);
+    kabam.emit('broadcast', messageObj);
 ```
 
 will emit event to all authorized users, that are currently online.
@@ -82,39 +83,37 @@ This event can be captured by this code on `client side`
 Usage for particular users' notifications
 ====================
 
-First, we need to get one instance of [MWC.MODEL.Users](https://github.com/mywebclass/mwc_kernel#the-model-of-user)
+First, we need to get one instance of [kabam.MODEL.Users](https://github.com/mykabam/kabam-kernel#the-model-of-user)
 Than we need to notify this user with this command
 
 ```javascript
-    var notifyObj={
-         'type': 'socketio', //mandatory field! have to BE EQUAL 'socketio'
-         'text': 'Hello!',
-         'foo':["one","two","three"],
-         'bar':{'lalala':'3ryblya'}
-       };
-    userFound.notify(notifyObj);
+var notifyObj = {
+  'type': 'socketio', //mandatory field! have to BE EQUAL 'socketio'
+  'text': 'Hello!',
+  'foo': ["one", "two", "three"],
+  'bar': {
+    'lalala': '3ryblya'
+  }
+};
+userFound.notify(notifyObj);
 ```
 
 And this code on `client side` catches this notification for this particular user!
 
 ```html
-
-    <script src="/socket.io/socket.io.js" type="text/javascript"></script>
-    <script>
-        var socket = io.connect();
-        socket.on('notify',function(data){
-            //data is the EXACT notifyObj from serverside
-        });
-    </script>
-
+<script src="/socket.io/socket.io.js" type="text/javascript"></script>
+<script>
+var socket = io.connect();
+socket.on('notify', function(data) {
+  //data is the EXACT notifyObj from serverside
+});
+</script>
 
 ```
-
 
 Usage for broadcast for all non authorized users online
 ====================
 Will be created. Maybe...
-
 
 Other todos
 ====================
@@ -141,11 +140,11 @@ runned from some version of Windows XP (i don't know how to see the version in i
 The nodeJS setup was
 ```shell
 
-    [nap@rhel mwc_plugin_socket_io]$ node -v
+    [nap@rhel kabam-plugin-socket-io]$ node -v
     v0.10.13
-    [nap@rhel mwc_plugin_socket_io]$ npm -v
+    [nap@rhel kabam-plugin-socket-io]$ npm -v
     1.3.2
-    [nap@rhel mwc_plugin_socket_io]$ pound -V
+    [nap@rhel kabam-plugin-socket-io]$ pound -V
     starting...
     Version 2.6
       Configuration switches:
