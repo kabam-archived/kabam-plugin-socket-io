@@ -3,14 +3,13 @@ var http = require('http'),
   ioRedis = require('redis'),
   express = require('express'),
   RedisStore = require('connect-redis')(express),
-  passportSocketIo = require("passport.socketio"),
+  passportSocketIo = require('passport.socketio'),
   server;
 
+exports.name = 'kabam_socket';
 
-exports.name = 'mwc_sio';
-
-exports.app = function (core) {
-  server = http.createServer(core.app);
+exports.app = function (kabam) {
+  server = http.createServer(kabam.app);
   var io = ioServer.listen(server);
 
   io.enable('browser client cache');
@@ -20,13 +19,13 @@ exports.app = function (core) {
   io.set('browser client expires', (24 * 60 * 60));
 //*/
 //for heroku or Pound reverse proxy
-  io.set("transports", ["xhr-polling"]);
-  io.set("polling duration", 6);
+  io.set('transports', ['xhr-polling']);
+  io.set('polling duration', 6);
 //*/
 
 
   //make redis not so verbose
-  core.app.configure('production', function () {
+  kabam.app.configure('production', function () {
     io.set('log level', 1);
   });
 
@@ -36,15 +35,15 @@ exports.app = function (core) {
 
   io.set('store', new ioRedisStore({
     redis: ioRedis,
-    redisPub: core.createRedisClient(), //it works in pub mode, it cannot access database
-    redisSub: core.createRedisClient(), //it works in sub mode, it cannot access database
-    redisClient: core.redisClient
+    redisPub: kabam.createRedisClient(), //it works in pub mode, it cannot access database
+    redisSub: kabam.createRedisClient(), //it works in sub mode, it cannot access database
+    redisClient: kabam.redisClient
   }));
 //*/
-  var sessionStorage = new RedisStore({prefix: 'mwc_sess_', client: core.redisClient});
+  var sessionStorage = new RedisStore({prefix: 'kabam_sess_', client: kabam.redisClient});
   io.set("authorization", passportSocketIo.authorize({
       cookieParser: express.cookieParser,
-      secret: core.config.secret,
+      secret: kabam.config.secret,
       store: sessionStorage,
       fail: function (data, accept) {    //there is no passportJS user present for this session!
 //        console.log('vvv fail');
@@ -62,7 +61,7 @@ exports.app = function (core) {
 //          console.log('v session');
 //          console.log(session);
 //          console.log('^ session');
-          core.model.Users.findOneByApiKey(session.passport.user, function (err, user) {
+          kabam.model.Users.findOneByApiKey(session.passport.user, function (err, user) {
             if(user){
 //            console.log('user found '+user.username);
               data.user = user;
@@ -83,13 +82,13 @@ exports.app = function (core) {
 
 
   //emit event to all connected and authorized users
-  core.on('broadcast', function (message) {
+  kabam.on('broadcast', function (message) {
     io.sockets.emit('broadcast', message);
   });
 
 //*/
   //catch event created by User.notify() to the user needed only
-  core.on('notify:sio', function (message) {
+  kabam.on('notify:sio', function (message) {
       var activeUsers = io.sockets.manager.handshaken;
       for (var x in activeUsers) {
         if (activeUsers[x].user.username === message.user.username) {
@@ -102,7 +101,7 @@ exports.app = function (core) {
       }
   });
 
-  core.mwc_sio.io=io;
+  kabam.socket.io=io;
 };
 
 exports.core = {
